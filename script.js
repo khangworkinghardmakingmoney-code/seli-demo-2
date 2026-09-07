@@ -590,18 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentActiveReportType = 'employer';
 
   function openReportModal(reportType) {
-    currentActiveReportType = reportType || 'personal';
-    const modalTitleEl = document.getElementById('modalReportTitle');
-    if (modalTitleEl && reportType !== 'pricing') {
-      modalTitleEl.textContent = 'Tìm hiểu thêm về Bản đồ Năng lực Lãnh đạo SELI';
-    }
-
-    const modalTarget = document.getElementById('reportDownloadModal');
-    if (modalTarget) {
-      modalTarget.classList.add('active');
-      modalTarget.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
+    showScrollPopup();
   }
 
   function closeReportModal() {
@@ -897,5 +886,20 @@ document.addEventListener('DOMContentLoaded', () => {
       closeScrollPopup();
     });
   }
+
+  // Trigger: All CTA buttons across the page open the same Popup Modal Form
+  // EXCEPT the final inline form submission button (#btnInlineSubmit)
+  document.addEventListener('click', (e) => {
+    const ctaTarget = e.target.closest(
+      '.btn-nav-primary, .btn-nav-outline, #btnStartSeli, #btnStatementCta, ' +
+      '.btn-view-report-sample, #btnScienceConsult, .btn-pkg-contact, .btn-cta-experience, ' +
+      'a[href="#demo"], a[href="#contact"], a[href="#login"]'
+    );
+
+    if (ctaTarget && !ctaTarget.closest('#seliScrollPopup') && !ctaTarget.matches('#btnInlineSubmit')) {
+      e.preventDefault();
+      showScrollPopup();
+    }
+  });
 
 });
