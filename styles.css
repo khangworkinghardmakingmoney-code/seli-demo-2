@@ -55,6 +55,14 @@
   --card-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 /* Reset & Base */
 * {
   box-sizing: border-box;
