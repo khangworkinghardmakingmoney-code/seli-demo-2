@@ -821,4 +821,81 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ==========================================================================
+     50% SCROLL & 3-MINUTE RE-APPEARANCE POPUP CONTROLLER
+     ========================================================================== */
+  const seliScrollPopup = document.getElementById('seliScrollPopup');
+  const btnClosePopup = document.getElementById('btnClosePopup');
+  const popupConsultForm = document.getElementById('popupConsultForm');
+
+  let hasShownScrollPopup = false;
+  let isPopupCurrentlyOpen = false;
+  let popup3MinTimer = null;
+
+  function showScrollPopup() {
+    if (seliScrollPopup && !isPopupCurrentlyOpen) {
+      seliScrollPopup.classList.add('active');
+      seliScrollPopup.setAttribute('aria-hidden', 'false');
+      isPopupCurrentlyOpen = true;
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeScrollPopup() {
+    if (seliScrollPopup && isPopupCurrentlyOpen) {
+      seliScrollPopup.classList.remove('active');
+      seliScrollPopup.setAttribute('aria-hidden', 'true');
+      isPopupCurrentlyOpen = false;
+      document.body.style.overflow = '';
+
+      // Clear any existing timer
+      if (popup3MinTimer) clearTimeout(popup3MinTimer);
+
+      // Re-appear after user spends 3 minutes (180,000 ms) on the site after closing
+      popup3MinTimer = setTimeout(() => {
+        showScrollPopup();
+      }, 180000);
+    }
+  }
+
+  // Trigger 1: Scroll to 50% of the website
+  window.addEventListener('scroll', () => {
+    if (hasShownScrollPopup || isPopupCurrentlyOpen) return;
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    if (docHeight > 0 && (scrollTop / docHeight) >= 0.5) {
+      hasShownScrollPopup = true;
+      showScrollPopup();
+    }
+  });
+
+  // Event Listeners for Closing Popup
+  if (btnClosePopup) {
+    btnClosePopup.addEventListener('click', closeScrollPopup);
+  }
+
+  if (seliScrollPopup) {
+    seliScrollPopup.addEventListener('click', (e) => {
+      if (e.target === seliScrollPopup) {
+        closeScrollPopup();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isPopupCurrentlyOpen) {
+      closeScrollPopup();
+    }
+  });
+
+  if (popupConsultForm) {
+    popupConsultForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Cảm ơn bạn! Đội ngũ SELI sẽ liên hệ với bạn trong thời gian sớm nhất.');
+      closeScrollPopup();
+    });
+  }
+
 });
